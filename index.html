@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jase Fitness — Fat Loss Coaching</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --white: #f5f2ee;
+    --cream: #ede9e2;
+    --orange: #e85d1a;
+    --orange-light: #ff7a3d;
+    --muted: #9a9590;
+    --card-bg: #111111;
+    --border: rgba(245,242,238,0.08);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed; top: 0; left: 0;
+    width: 10px; height: 10px;
+    background: var(--orange);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(232,93,26,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  }
+  body:hover .cursor-ring { opacity: 1; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 60px;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.4s, background 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(8,8,8,0.96);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--orange); }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--orange);
+    transition: width 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    background: var(--orange);
+    color: var(--white) !important;
+    padding: 10px 24px;
+    border-radius: 2px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 0.3s, transform 0.2s !important;
+  }
+  .nav-cta::after { display: none !important; }
+  .nav-cta:hover { background: var(--orange-light) !important; color: var(--white) !important; transform: translateY(-1px); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 140px 60px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.25)),
+      radial-gradient(ellipse 60% 70% at 75% 50%, rgba(232,93,26,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(232,93,26,0.10) 0%, transparent 60%),
+      url('images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(245,242,238,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,242,238,0.025) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 780px; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 28px;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-tag::before {
+    content: ''; width: 30px; height: 1px; background: var(--orange);
+  }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 10vw, 130px);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    color: var(--white);
+    opacity: 0; transform: translateY(30px);
+    animation: fadeUp 0.9s ease 0.4s forwards;
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--orange);
+    -webkit-text-stroke: 0;
+  }
+  h1 .outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(245,242,238,0.3);
+  }
+  .hero-sub {
+    margin-top: 32px;
+    font-size: 17px; line-height: 1.7;
+    color: var(--muted);
+    max-width: 480px;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+  .hero-actions {
+    margin-top: 48px;
+    display: flex; gap: 20px; align-items: center;
+    opacity: 0; transform: translateY(20px);
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+  .btn-primary {
+    background: var(--orange);
+    color: var(--white);
+    padding: 16px 40px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--orange-light);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+  .btn-ghost {
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+    transition: gap 0.3s ease, color 0.3s;
+  }
+  .btn-ghost:hover { color: var(--orange); gap: 16px; }
+  .btn-ghost .arrow { font-size: 18px; }
+
+  .hero-stats {
+    position: absolute; right: 60px; bottom: 80px;
+    display: flex; flex-direction: column; gap: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+  .stat-item { text-align: right; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; line-height: 1;
+    color: var(--white);
+  }
+  .stat-num span { color: var(--orange); }
+  .stat-label {
+    font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .hero-line {
+    position: absolute; left: 0; bottom: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+  }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    padding: 20px 0;
+    background: var(--orange);
+    overflow: hidden; white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-flex; gap: 60px;
+    animation: marquee 18s linear infinite;
+  }
+  .marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px; letter-spacing: 4px;
+    color: var(--white);
+    display: flex; align-items: center; gap: 60px;
+  }
+  .marquee-item::after {
+    content: '✦';
+    font-size: 10px; opacity: 0.6;
+  }
+
+  /* SECTIONS common */
+  section { padding: 120px 60px; }
+  .section-tag {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--orange);
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-tag::before { content: ''; width: 24px; height: 1px; background: var(--orange); }
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 0.95; letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+
+  /* ABOUT */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+  .about-img-wrap {
+    position: relative;
+    aspect-ratio: 3/4;
+    max-height: 580px;
+  }
+  .about-img-placeholder {
+    width: 100%; height: 100%;
+    background: var(--card-bg);
+    border: 1px dashed rgba(232,93,26,0.4);
+    border-radius: 4px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px;
+    position: relative; overflow: hidden;
+  }
+  .about-img-placeholder .about-img,
+  .about-img-placeholder img.about-img {
+    width: 100%; height: 100%; display: block; object-fit: cover;
+  }
+  .about-img-placeholder::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(232,93,26,0.07), transparent);
+  }
+  .img-icon {
+    width: 64px; height: 64px;
+    border: 1.5px dashed rgba(232,93,26,0.5);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; color: var(--orange);
+  }
+  .img-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); text-align: center;
+    padding: 0 24px; line-height: 1.6;
+  }
+  .img-sub { font-size: 11px; color: rgba(154,149,144,0.6); }
+  .about-badge {
+    position: absolute; bottom: -16px; right: -16px;
+    background: var(--orange);
+    padding: 20px 24px;
+    border-radius: 3px;
+    text-align: center;
+  }
+  .about-badge .num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px; line-height: 1;
+  }
+  .about-badge .lbl {
+    font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.85; margin-top: 2px;
+  }
+  .about-text .section-tag { margin-top: 0; }
+  .about-text p {
+    font-size: 16px; line-height: 1.85;
+    color: rgba(245,242,238,0.7);
+    margin-bottom: 20px;
+  }
+  .about-pills {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 32px;
+  }
+  .pill {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted);
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .pill:hover { border-color: var(--orange); color: var(--orange); }
+
+  /* SERVICES */
+  #services { background: #0a0a0a; }
+  .services-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 64px;
+  }
+  .services-header .right { max-width: 380px; }
+  .services-header p {
+    font-size: 15px; line-height: 1.8;
+    color: var(--muted);
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .service-card {
+    background: var(--card-bg);
+    padding: 48px 40px;
+    position: relative; overflow: hidden;
+    transition: background 0.4s;
+    cursor: default;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--orange);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    transform-origin: left;
+  }
+  .service-card:hover { background: #161616; }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px; line-height: 1;
+    color: rgba(232,93,26,0.15);
+    margin-bottom: 24px;
+    transition: color 0.4s;
+  }
+  .service-card:hover .service-num { color: rgba(232,93,26,0.3); }
+  .service-icon { font-size: 32px; margin-bottom: 20px; }
+  .service-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800;
+    margin-bottom: 16px; line-height: 1.2;
+  }
+  .service-card p {
+    font-size: 14px; line-height: 1.8;
+    color: var(--muted);
+  }
+  .service-arrow {
+    position: absolute; bottom: 40px; right: 40px;
+    width: 40px; height: 40px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--muted);
+    transition: border-color 0.3s, color 0.3s, transform 0.3s, background 0.3s;
+  }
+  .service-card:hover .service-arrow {
+    border-color: var(--orange);
+    color: var(--orange);
+    background: rgba(232,93,26,0.1);
+    transform: rotate(45deg);
+  }
+
+  /* HOW IT WORKS */
+  #process { position: relative; }
+  .process-steps {
+    margin-top: 64px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .process-steps::before {
+    content: '';
+    position: absolute;
+    top: 32px; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), var(--orange), var(--border), transparent);
+  }
+  .step-img { width: 100%; height: 160px; margin-bottom: 18px; overflow: hidden; border-radius: 6px; }
+  .step-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .step {
+    padding: 0 32px;
+    padding-top: 80px;
+    position: relative;
+    text-align: center;
+  }
+  .step-dot {
+    position: absolute; top: 20px; left: 50%;
+    transform: translateX(-50%);
+    width: 24px; height: 24px;
+    background: var(--orange);
+    border-radius: 50%;
+    border: 4px solid var(--black);
+    box-shadow: 0 0 0 1px var(--orange);
+  }
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 3px;
+    color: var(--orange); margin-bottom: 16px;
+  }
+  .step h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 800;
+    margin-bottom: 12px; line-height: 1.3;
+  }
+  .step p { font-size: 13px; line-height: 1.8; color: var(--muted); }
+
+  /* TESTIMONIALS */
+  #testimonials { background: #0a0a0a; }
+  .testimonials-header { margin-bottom: 64px; }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 2px;
+  }
+  .testi-card {
+    background: var(--card-bg);
+    padding: 48px 40px;
+    position: relative;
+    transition: background 0.3s;
+  }
+  .testi-card:hover { background: #161616; }
+  .testi-card.featured {
+    background: var(--orange);
+    grid-row: span 1;
+  }
+  .testi-card.featured:hover { background: var(--orange-light); }
+  .quote-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px; line-height: 0.7;
+    color: rgba(232,93,26,0.3);
+    margin-bottom: 24px;
+  }
+  .testi-card.featured .quote-mark { color: rgba(255,255,255,0.3); }
+  .testi-text {
+    font-size: 16px; line-height: 1.75;
+    color: rgba(245,242,238,0.8);
+    margin-bottom: 32px;
+  }
+  .testi-card.featured .testi-text { color: rgba(255,255,255,0.9); }
+  .testi-author { display: flex; align-items: center; gap: 14px; }
+  .testi-avatar {
+    width: 44px; height: 44px;
+    background: rgba(232,93,26,0.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 800;
+    color: var(--orange);
+  }
+  .testi-card.featured .testi-avatar {
+    background: rgba(255,255,255,0.2);
+    color: var(--white);
+  }
+  .testi-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 700;
+  }
+  .testi-info { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .testi-card.featured .testi-info { color: rgba(255,255,255,0.7); }
+  .testi-result {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 6px 14px;
+    background: rgba(232,93,26,0.15);
+    border-radius: 2px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--orange);
+  }
+  .testi-card.featured .testi-result {
+    background: rgba(255,255,255,0.2);
+    color: var(--white);
+  }
+
+  /* PRICING */
+  #pricing {
+    text-align: center;
+  }
+  .pricing-intro { max-width: 560px; margin: 0 auto 64px; }
+  .pricing-intro p { font-size: 16px; line-height: 1.8; color: var(--muted); margin-top: 16px; }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 1000px; margin: 0 auto;
+  }
+  .price-card {
+    background: var(--card-bg);
+    padding: 48px 40px;
+    text-align: left;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, background 0.3s;
+  }
+  .price-card:hover { background: #161616; transform: translateY(-4px); }
+  .price-card.popular {
+    background: var(--orange);
+    transform: scale(1.03);
+  }
+  .price-card.popular:hover { background: var(--orange-light); transform: scale(1.03) translateY(-4px); }
+  .popular-badge {
+    position: absolute; top: 20px; right: 20px;
+    background: var(--white);
+    color: var(--orange);
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-family: 'Syne', sans-serif;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .price-plan {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .price-card.popular .price-plan { color: rgba(255,255,255,0.7); }
+  .price-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px; line-height: 1;
+    letter-spacing: 1px;
+  }
+  .price-amount sup { font-size: 32px; vertical-align: super; }
+  .price-period {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .price-card.popular .price-period { color: rgba(255,255,255,0.7); }
+  .price-divider {
+    height: 1px; background: var(--border);
+    margin-bottom: 32px;
+  }
+  .price-card.popular .price-divider { background: rgba(255,255,255,0.2); }
+  .price-features { list-style: none; margin-bottom: 40px; }
+  .price-features li {
+    padding: 10px 0;
+    font-size: 14px; line-height: 1.5;
+    color: rgba(245,242,238,0.75);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .price-card.popular .price-features li { color: rgba(255,255,255,0.9); }
+  .check {
+    width: 18px; height: 18px;
+    background: rgba(232,93,26,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--orange);
+    flex-shrink: 0;
+  }
+  .price-card.popular .check {
+    background: rgba(255,255,255,0.2);
+    color: var(--white);
+  }
+  .price-btn {
+    display: block; width: 100%;
+    padding: 14px;
+    text-align: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .price-btn-outline {
+    border: 1px solid var(--border);
+    color: var(--white);
+  }
+  .price-btn-outline:hover { border-color: var(--orange); color: var(--orange); background: rgba(232,93,26,0.05); }
+  .price-btn-white {
+    background: var(--white);
+    color: var(--orange);
+  }
+  .price-btn-white:hover { background: var(--cream); }
+
+  /* CTA */
+  #cta {
+    background: transparent;
+    text-align: center;
+    padding: 100px 60px;
+    position: relative; overflow: hidden;
+  }
+  #cta::before {
+    content: 'JASE';
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 300px; letter-spacing: 20px;
+    color: rgba(255,255,255,0.06);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+  #cta .section-tag { justify-content: center; color: rgba(255,255,255,0.7); }
+  #cta .section-tag::before { background: rgba(255,255,255,0.5); }
+  #cta h2 { color: var(--white); margin-bottom: 20px; }
+  #cta p { font-size: 17px; color: rgba(255,255,255,0.75); max-width: 500px; margin: 0 auto 48px; line-height: 1.7; }
+  .cta-btn {
+    display: inline-block;
+    padding: 18px 56px;
+    background: var(--white);
+    color: var(--orange);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: transform 0.3s, background 0.3s;
+    position: relative; z-index: 1;
+  }
+  .cta-btn:hover { transform: translateY(-3px); background: var(--cream); }
+
+  /* FOOTER */
+  footer {
+    background: #050505;
+    padding: 60px 60px 40px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 40px;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; letter-spacing: 4px;
+    color: var(--white); text-decoration: none;
+  }
+  .footer-logo span { color: var(--orange); }
+  .footer-tagline { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .footer-links { display: flex; gap: 60px; }
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .footer-col a {
+    font-size: 14px; color: rgba(245,242,238,0.5);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-col a:hover { color: var(--orange); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 32px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+  .social-links { display: flex; gap: 16px; }
+  .social-link {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+    transition: border-color 0.3s, color 0.3s, background 0.3s;
+  }
+  .social-link img {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+  .social-link:hover { border-color: var(--orange); color: var(--orange); background: rgba(232,93,26,0.1); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 28px; }
+    .nav-links { display: none; }
+    #hero { padding: 120px 28px 60px; }
+    .hero-stats { display: none; }
+    section { padding: 80px 28px; }
+    #about { grid-template-columns: 1fr; gap: 40px; }
+    .services-grid, .testimonials-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .price-card.popular { transform: none; }
+    .price-card.popular:hover { transform: translateY(-4px); }
+    .services-header { flex-direction: column; gap: 20px; }
+    .process-steps { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .process-steps::before { display: none; }
+    .step { padding-top: 48px; }
+    .footer-top { flex-direction: column; gap: 40px; }
+    .footer-links { flex-direction: column; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  }
+
+  /* Modal (CTA informational dialog) */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2000;
+  }
+  .modal {
+    background: linear-gradient(180deg, rgba(13,13,13,0.98), rgba(20,20,20,0.98));
+    border: 1px solid rgba(255,255,255,0.04);
+    padding: 28px; max-width: 520px; width: calc(100% - 48px);
+    color: var(--white); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    font-family: 'Syne', sans-serif; line-height: 1.4;
+  }
+  .modal h3 { margin-bottom: 8px; font-size: 18px; }
+  .modal p { color: var(--muted); margin-bottom: 18px; }
+  .modal-actions { display:flex; gap: 12px; justify-content: flex-end; }
+  .modal .btn { padding: 10px 16px; border-radius: 3px; cursor: pointer; }
+  .modal .btn-primary { background: var(--orange); color: var(--white); border: none; }
+  .modal .btn-ghost { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.06); }
+  /* CTA background */
+  #cta { position: relative; overflow: hidden; background: transparent; }
+  .cta-bg { position: absolute; inset: 0; z-index: 0; background-color: rgba(0,0,0,0.35); background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.45)), url('images/cta-bg.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; }
+  #cta > :not(.cta-bg) { position: relative; z-index: 2; }
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">JASE<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#testimonials">Results</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#cta" class="nav-cta">Start Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Fat Loss Coaching</div>
+    <h1>
+      BURN<br>
+      <em>FAT.</em><br>
+      <span class="outline">LOOK</span><br>
+      FIT.
+    </h1>
+    <p class="hero-sub">You can achieve your dream physique like an Hollywood actor with science-backed fat loss coaching designed around your lifestyle. No crash diets. No gimmicks. Just real, sustainable results — for good.</p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn-primary"><span>Start Your Journey</span></a>
+      <a href="#process" class="btn-ghost">How It Works <span class="arrow">→</span></a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">200<span>+</span></div>
+      <div class="stat-label">Clients Transformed</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">4<span>k+</span></div>
+      <div class="stat-label">Kilos Lost Total</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">98<span>%</span></div>
+      <div class="stat-label">Satisfaction Rate</div>
+    </div>
+  </div>
+  <div class="hero-line"></div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">Sustainable Fat Loss</span>
+    <span class="marquee-item">Custom Nutrition Plans</span>
+    <span class="marquee-item">1-on-1 Coaching</span>
+    <span class="marquee-item">Habit Transformation</span>
+    <span class="marquee-item">Accountability System</span>
+    <span class="marquee-item">Real Results</span>
+    <span class="marquee-item">Sustainable Fat Loss</span>
+    <span class="marquee-item">Custom Nutrition Plans</span>
+    <span class="marquee-item">1-on-1 Coaching</span>
+    <span class="marquee-item">Habit Transformation</span>
+    <span class="marquee-item">Accountability System</span>
+    <span class="marquee-item">Real Results</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-img-wrap reveal">
+    <div class="about-img-placeholder">
+      <img src="images/jase.jpg" alt="Jase — coach" class="about-img">
+    </div>
+    <div class="about-badge">
+      <div class="num">5+</div>
+      <div class="lbl">Years Coaching</div>
+    </div>
+  </div>
+  <div class="about-text reveal reveal-delay-2">
+    <div class="section-tag">About Jase</div>
+    <h2>I'VE BEEN WHERE YOU ARE.</h2>
+    <p>I know what it feels like to be frustrated — to try diet after diet and still not see the results you want. That's exactly why I became a coach. I went through the same journey, and I found what actually works.</p>
+    <p>Today, I help busy people strip away body fat without destroying their social life, energy, or sanity. My approach is built on habits, not heroics — because lasting change only happens when your lifestyle changes too.</p>
+    <p>No cookie-cutter plans. No bro-science. Just a proven, personalized system that fits your life.</p>
+    <div class="about-pills">
+      <span class="pill">Certified Nutrition Coach</span>
+      <span class="pill">Personal Trainer</span>
+      <span class="pill">Habit Coach</span>
+      <span class="pill">Online Coach</span>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header">
+    <div class="left reveal">
+      <div class="section-tag">What I Offer</div>
+      <h2>COACHING<br>PROGRAMS</h2>
+    </div>
+    <div class="right reveal reveal-delay-2">
+      <p>Every program is built around your specific goals, schedule, and lifestyle. No templates, no shortcuts — just a system that actually works for you.</p>
+    </div>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-num">01</div>
+      <div class="service-icon">🔥</div>
+      <h3>Fat Loss Fundamentals</h3>
+      <p>Learn the science behind sustainable fat loss and build the foundation habits that keep weight off for good — without obsessing over food.</p>
+      <div class="service-arrow">↗</div>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-num">02</div>
+      <div class="service-icon">🥗</div>
+      <h3>Custom Nutrition Planning</h3>
+      <p>A personalized nutrition strategy built around foods you enjoy. Flexible, realistic, and designed to fit into your everyday life with ease.</p>
+      <div class="service-arrow">↗</div>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-num">03</div>
+      <div class="service-icon">💪</div>
+      <h3>Training Program Design</h3>
+      <p>Custom workout programs tailored to your fitness level, available equipment, and schedule — maximizing fat burn while preserving muscle.</p>
+      <div class="service-arrow">↗</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-tag reveal">How It Works</div>
+  <h2 class="reveal reveal-delay-1">THE PROCESS</h2>
+  <div class="process-steps">
+    <div class="step reveal">
+      <div class="step-dot"></div>
+      <div class="step-num">STEP 01</div>
+      <div class="step-img"><img src="images/process-1.jpg" alt="Discovery call"></div>
+      <h3>Free Discovery Call</h3>
+      <p>We jump on a 30-minute call to discuss your goals, lifestyle, and challenges. Zero pressure — just clarity on what's possible.</p>
+    </div>
+    <div class="step reveal reveal-delay-1">
+      <div class="step-dot"></div>
+      <div class="step-num">STEP 02</div>
+      <div class="step-img"><img src="images/process-2.jpg" alt="Custom plan"></div>
+      <h3>Your Custom Plan</h3>
+      <p>I design your personalized nutrition, training, and lifestyle plan — built specifically around your life, not someone else's template.</p>
+    </div>
+    <div class="step reveal reveal-delay-2">
+      <div class="step-dot"></div>
+      <div class="step-num">STEP 03</div>
+      <div class="step-img"><img src="images/process-3.jpg" alt="Check-ins"></div>
+      <h3>Weekly Check-ins</h3>
+      <p>We review your progress every week, adjust as needed, and keep momentum high through consistent communication and support.</p>
+    </div>
+    <div class="step reveal reveal-delay-3">
+      <div class="step-dot"></div>
+      <div class="step-num">STEP 04</div>
+      <div class="step-img"><img src="images/process-4.jpg" alt="Results"></div>
+      <h3>Lifelong Results</h3>
+      <p>By the end, you don't just have a leaner body — you have the knowledge and habits to maintain it for the rest of your life.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testimonials-header">
+    <div class="section-tag reveal">Client Results</div>
+    <h2 class="reveal reveal-delay-1">REAL PEOPLE.<br>REAL RESULTS.</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testi-card featured reveal">
+      <div class="quote-mark">"</div>
+      <p class="testi-text">I'd tried every diet out there for years and nothing stuck. Jase helped me understand that it wasn't about eating less — it was about eating right for MY body and MY life. Lost 18kg in 5 months and I've kept it off for over a year now. Life-changing doesn't even cover it.</p>
+      <span class="testi-result">↓ 18kg in 5 months</span>
+      <div class="testi-author" style="margin-top: 24px;">
+        <div class="testi-avatar">M</div>
+        <div>
+          <div class="testi-name">Marco R.</div>
+          <div class="testi-info">Lost 18kg • Business Owner</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-1">
+      <div class="quote-mark">"</div>
+      <p class="testi-text">As a mom of two with zero time, I was skeptical. Jase made everything fit into my schedule. Down 11kg and I actually have energy to keep up with my kids now.</p>
+      <span class="testi-result">↓ 11kg in 4 months</span>
+      <div class="testi-author" style="margin-top: 24px;">
+        <div class="testi-avatar">S</div>
+        <div>
+          <div class="testi-name">Sarah K.</div>
+          <div class="testi-info">Lost 11kg • Stay-at-home Mom</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-2">
+      <div class="quote-mark">"</div>
+      <p class="testi-text">No more yo-yo dieting. Jase's approach is completely different — it finally clicked. Lost 14kg and transformed my relationship with food completely.</p>
+      <span class="testi-result">↓ 14kg in 4.5 months</span>
+      <div class="testi-author" style="margin-top: 24px;">
+        <div class="testi-avatar">D</div>
+        <div>
+          <div class="testi-name">David T.</div>
+          <div class="testi-info">Lost 14kg • Engineer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="pricing-intro">
+    <div class="section-tag reveal" style="justify-content:center;">Invest In Yourself</div>
+    <h2 class="reveal reveal-delay-1">SIMPLE<br>PRICING</h2>
+    <p class="reveal reveal-delay-2">Choose the level of support that fits your goals. All plans include a free discovery call and a 7-day satisfaction guarantee.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="price-plan">Starter</div>
+      <div class="price-amount"><sup>₱</sup>4,999</div>
+      <div class="price-period">/ month</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li><span class="check">✓</span> Custom nutrition plan</li>
+        <li><span class="check">✓</span> Custom training program</li>
+        <li><span class="check">✓</span> Bi-weekly check-ins</li>
+        <li><span class="check">✓</span> WhatsApp support</li>
+        <li><span class="check">✓</span> Monthly plan updates</li>
+      </ul>
+      <a href="#cta" class="price-btn price-btn-outline">Get Started</a>
+    </div>
+    <div class="price-card popular reveal reveal-delay-1">
+      <span class="popular-badge">Most Popular</span>
+      <div class="price-plan">Pro</div>
+      <div class="price-amount"><sup>₱</sup>8,999</div>
+      <div class="price-period">/ month</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li><span class="check">✓</span> Everything in Starter</li>
+        <li><span class="check">✓</span> Weekly 1-on-1 calls</li>
+        <li><span class="check">✓</span> Daily accountability</li>
+        <li><span class="check">✓</span> Habit coaching</li>
+        <li><span class="check">✓</span> Weekly adjustments</li>
+        <li><span class="check">✓</span> Priority response</li>
+      </ul>
+      <a href="#cta" class="price-btn price-btn-white">Get Started</a>
+    </div>
+    <div class="price-card reveal reveal-delay-2">
+      <div class="price-plan">Elite</div>
+      <div class="price-amount"><sup>₱</sup>14,999</div>
+      <div class="price-period">/ month</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li><span class="check">✓</span> Everything in Pro</li>
+        <li><span class="check">✓</span> Unlimited 1-on-1 calls</li>
+        <li><span class="check">✓</span> 24/7 direct access</li>
+        <li><span class="check">✓</span> Meal prep coaching</li>
+        <li><span class="check">✓</span> Supplement guidance</li>
+        <li><span class="check">✓</span> Lifestyle deep-dive</li>
+      </ul>
+      <a href="#cta" class="price-btn price-btn-outline">Get Started</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-bg"></div>
+  <div class="section-tag reveal">Ready?</div>
+  <h2 class="reveal reveal-delay-1">YOUR BEST BODY<br>STARTS TODAY.</h2>
+  <p class="reveal reveal-delay-2">Book a free 30-minute discovery call and let's map out exactly how to get you to your goals — no fluff, no sales pitch.</p>
+  <button id="bookCallBtn" class="cta-btn reveal reveal-delay-3">Book Free Call</button>
+</section>
+
+<!-- CTA Modal -->
+<div id="ctaModal" class="modal-overlay" style="display:none;" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ctaModalTitle">
+    <h3 id="ctaModalTitle">Heads up — demo behavior</h3>
+    <p>When you hit this button, your email app (like Outlook, Apple Mail, etc.) will pop open. And that's the end of our little live demo for now!</p>
+    <div class="modal-actions">
+      <button id="ctaClose" class="btn btn-ghost">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <a href="#hero" class="footer-logo">JASE<span>.</span></a>
+      <div class="footer-tagline">Fat Loss Coaching · Real Results</div>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#process">Process</a></li>
+          <li><a href="#testimonials">Results</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">X (Twitter)</a></li>
+          <li><a href="#">TikTok</a></li>
+          <li><a href="#">Email</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Jase Fitness. All rights reserved.</span>
+    <div class="social-links">
+      <a href="#" class="social-link" aria-label="Instagram" title="Instagram">
+        <img src="images/ig.webp" alt="Instagram">
+      </a>
+      <a href="#" class="social-link" aria-label="TikTok" title="TikTok">
+        <img src="images/tiktok-solo-white-icon.webp" alt="TikTok">
+      </a>
+      <a href="#" class="social-link" aria-label="X" title="X (Twitter)">
+        <img src="images/x-social-media-white-icon.webp" alt="X">
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      cursorRing.style.left = e.clientX + 'px';
+      cursorRing.style.top = e.clientY + 'px';
+    }, 60);
+  });
+  document.querySelectorAll('a, button, .service-card, .price-card, .testi-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      cursorRing.style.width = '56px';
+      cursorRing.style.height = '56px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '10px';
+      cursor.style.height = '10px';
+      cursorRing.style.width = '36px';
+      cursorRing.style.height = '36px';
+    });
+  });
+
+  // Nav scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(r => observer.observe(r));
+
+  // CTA modal behavior
+  const bookBtn = document.getElementById('bookCallBtn');
+  const ctaModal = document.getElementById('ctaModal');
+  const ctaClose = document.getElementById('ctaClose');
+
+  function openModal() {
+    ctaModal.style.display = 'flex';
+    ctaModal.setAttribute('aria-hidden', 'false');
+    // move focus to close button for accessibility
+    ctaClose.focus();
+  }
+
+  function closeModal() {
+    ctaModal.style.display = 'none';
+    ctaModal.setAttribute('aria-hidden', 'true');
+    bookBtn.focus();
+  }
+
+  if (bookBtn) {
+    bookBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal();
+    });
+  }
+
+  if (ctaClose) {
+    ctaClose.addEventListener('click', closeModal);
+  }
+
+  // Close when clicking overlay outside modal
+  ctaModal.addEventListener('click', (e) => {
+    if (e.target === ctaModal) closeModal();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && ctaModal.style.display === 'flex') closeModal();
+  });
+</script>
+</body>
+</html>
